@@ -1,0 +1,108 @@
+{
+  "language": "en",
+  "background_urls": [
+    "https://www.youtube.com/watch?v=xAP8CSMEwZ8"
+  ],
+  "instructions": [
+    {
+      "text": "Get ready for a high-intensity interval training workout",
+      "duration_seconds": 10
+    },
+    {
+      "text": "Warm-up: light jogging in place for 60 seconds",
+      "duration_seconds": 60
+    },
+    {
+      "text": "Warm-up: arm circles for 30 seconds",
+      "duration_seconds": 30
+    },
+    {
+      "text": "Warm-up: jumping jacks for 30 seconds",
+      "duration_seconds": 30
+    },
+    {
+      "text": "Get ready for the first set of exercises",
+      "duration_seconds": 10
+    },
+    {
+      "text": "Burpees",
+      "duration_seconds": 30
+    },
+    {
+      "text": "Rest",
+      "duration_seconds": 15
+    },
+    {
+      "text": "High knees",
+      "duration_seconds": 30
+    },
+    {
+      "text": "Rest",
+      "duration_seconds": 15
+    },
+    {
+      "text": "Mountain climbers",
+      "duration_seconds": 30
+    },
+    {
+      "text": "Rest",
+      "duration_seconds": 15
+    },
+    {
+      "text": "Jump squats",
+      "duration_seconds": 30
+    },
+    {
+      "text": "Rest for 30 seconds before the next set",
+      "duration_seconds": 30
+    },
+    {
+      "text": "Burpees second set",
+      "duration_seconds": 30
+    },
+    {
+      "text": "Rest",
+      "duration_seconds": 15
+    },
+    {
+      "text": "High knees second set",
+      "duration_seconds": 30
+    },
+    {
+      "text": "Rest",
+      "duration_seconds": 15
+    },
+    {
+      "text": "Mountain climbers second set",
+      "duration_seconds": 30
+    },
+    {
+      "text": "Rest",
+      "duration_seconds": 15
+    },
+    {
+      "text": "Jump squats second set",
+      "duration_seconds": 30
+    },
+    {
+      "text": "Final rest. Great job!",
+      "duration_seconds": 30
+    },
+    {
+      "text": "Cool down: deep breathing for 30 seconds",
+      "duration_seconds": 30
+    },
+    {
+      "text": "Cool down: stretch your legs for 30 seconds",
+      "duration_seconds": 30
+    },
+    {
+      "text": "Cool down: stretch your arms for 30 seconds",
+      "duration_seconds": 30
+    },
+    {
+      "text": "Workout complete. Well done!",
+      "duration_seconds": 10
+    }
+  ]
+} 

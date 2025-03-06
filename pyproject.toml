@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "audio-instruction"
+version = "0.1.0"
+description = "A tool for generating workout audio guides with text-to-speech instructions. Available as Docker image: workout-audio-generator"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Audio Instruction Team", email = "info@example.com"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "fastapi==0.104.1",
+    "uvicorn==0.23.2",
+    "pydantic==2.5.2",
+    "pydub==0.25.1",
+    "gtts==2.3.2",
+    "pyloudnorm==0.1.1",
+    "numpy==1.26.0",
+    "yt-dlp==2023.11.16",
+    "pyyaml==6.0.1",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/yourusername/audio-instruction"
+"Bug Tracker" = "https://github.com/yourusername/audio-instruction/issues"
+
+[project.scripts]
+audio-instruction = "audio_instruction.cli.main:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py" 

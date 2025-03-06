@@ -1,0 +1,35 @@
+# HIIT Workout
+# language: en
+# background: https://www.youtube.com/watch?v=xAP8CSMEwZ8
+
+Get ready for a high-intensity interval training workout | 10
+Warm-up - light jogging in place | 60
+Warm-up - arm circles | 30
+Warm-up - jumping jacks | 30
+Get ready for the first set of exercises | 10
+
+# First set
+Burpees | 30
+Rest | 15
+High knees | 30
+Rest | 15
+Mountain climbers | 30
+Rest | 15
+Jump squats | 30
+Rest for 30 seconds before the next set | 30
+
+# Second set
+Burpees second set | 30
+Rest | 15
+High knees second set | 30
+Rest | 15
+Mountain climbers second set | 30
+Rest | 15
+Jump squats second set | 30
+Final rest. Great job! | 30
+
+# Cool down
+Cool down - deep breathing
+Cool down - stretch your legs
+Cool down - stretch your arms
+Workout complete. Well done! | 10 

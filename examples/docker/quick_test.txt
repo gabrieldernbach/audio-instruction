@@ -1,0 +1,9 @@
+# Quick Docker Test
+# This is a simple workout file to test the Docker container
+
+Warm up | 60
+Push-ups | 30
+Rest | 15
+Squats | 30
+Rest | 15
+Cool down | 60 
