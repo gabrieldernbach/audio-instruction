@@ -1,5 +1,6 @@
 """Workout guide generation functionality."""
 import io
+import logging
 from typing import List, Optional, Tuple
 
 from pydub import AudioSegment
@@ -10,6 +11,17 @@ from audio_instruction.core.audio import (
     merge_background_tracks,
 )
 from audio_instruction.core.tts import build_instruction_audio
+
+# Try to import browser automation
+try:
+    from audio_instruction.core.browser_download import (
+        SELENIUM_AVAILABLE,
+        fetch_background_tracks_browser,
+    )
+    BROWSER_AUTOMATION_AVAILABLE = SELENIUM_AVAILABLE
+except ImportError:
+    BROWSER_AUTOMATION_AVAILABLE = False
+    logging.warning("Browser automation module not available. Falling back to standard download.")
 
 
 def assemble_workout_audio(instructions: List[Tuple[str, int]], lang: str = "en") -> AudioSegment:
@@ -47,10 +59,23 @@ def integrate_continuous_background(guide_audio: AudioSegment, background_urls: 
     Returns:
         AudioSegment with guide audio and background music
     """
+    # First try regular downloading with user agent spoofing and rate limiting
+    logging.info("Attempting to download background tracks using standard method")
     bg_tracks = fetch_background_tracks(background_urls)
+    
+    # If standard method fails and browser automation is available, try that as fallback
+    if not bg_tracks and BROWSER_AUTOMATION_AVAILABLE:
+        logging.info("Standard download failed, falling back to browser automation")
+        bg_tracks = fetch_background_tracks_browser(background_urls)
+    
+    # If we still have no tracks, return just the guide audio
     if not bg_tracks:
+        logging.warning("No background tracks could be downloaded. Using instruction audio only.")
         return guide_audio
-        
+    
+    # Log success
+    logging.info(f"Successfully downloaded {len(bg_tracks)} background tracks")
+    
     # Process background tracks and reduce volume by 10dB
     processed = [adjust_loudness(track, -23.0).apply_gain(-10) for track in bg_tracks]
     
@@ -81,7 +106,10 @@ def generate_workout_guide_audio(
     guide_audio = assemble_workout_audio(instructions, lang)
     
     if background_urls:
-        guide_audio = integrate_continuous_background(guide_audio, background_urls)
+        try:
+            guide_audio = integrate_continuous_background(guide_audio, background_urls)
+        except Exception as e:
+            logging.error(f"Failed to integrate background music: {e}. Using instruction audio only.")
     
     # Export to buffer
     output_buffer = io.BytesIO()

@@ -5,20 +5,30 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
+    wget \
+    curl \
+    gnupg \
+    unzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install yt-dlp
-RUN pip install --no-cache-dir yt-dlp
+# Install yt-dlp - use the latest version
+RUN pip install --no-cache-dir --upgrade yt-dlp
 
-# Copy the package
-COPY . .
+# Create tmp directory for YouTube downloads
+RUN mkdir -p /app/tmp && chmod 777 /app/tmp
+
+# Copy only necessary files (exclude tmp directory)
+COPY audio_instruction/ /app/audio_instruction/
+COPY examples/ /app/examples/
+COPY pyproject.toml setup.py README.md /app/
 
 # Install the package and dependencies from pyproject.toml
 RUN pip install --no-cache-dir -e .
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 
 # Create a simple entrypoint script
 RUN echo '#!/bin/bash\n\

@@ -1,0 +1,92 @@
+{
+  "language": "en",
+  "background_urls": [
+    "https://www.youtube.com/watch?v=lTRiuFIWV54"
+  ],
+  "instructions": [
+  {
+    "text": "Welcome to a 20-minute yoga stretch session for runners and office workers",
+    "duration_seconds": 10
+  },
+  {
+    "text": "Begin in a comfortable seated position, take deep breaths for relaxation",
+    "duration_seconds": 30
+  },
+  {
+    "text": "Neck Stretch: Gently tilt your head side to side, holding each stretch for 15 seconds",
+    "duration_seconds": 30
+  },
+  {
+    "text": "Shoulder Rolls: Roll your shoulders forward and backward to release tension",
+    "duration_seconds": 30
+  },
+  {
+    "text": "Cat-Cow Stretch: Flow between cat and cow poses to warm up the spine",
+    "duration_seconds": 60
+  },
+  {
+    "text": "Downward Dog: Stretch your hamstrings, calves, and back",
+    "duration_seconds": 60
+  },
+  {
+    "text": "Forward Fold: Reach for your toes and let your hamstrings relax",
+    "duration_seconds": 60
+  },
+  {
+    "text": "Low Lunge Stretch (Right Leg): Stretch your hip flexors and quads",
+    "duration_seconds": 60
+  },
+  {
+    "text": "Low Lunge Stretch (Left Leg): Switch sides for a balanced stretch",
+    "duration_seconds": 60
+  },
+  {
+    "text": "Seated Forward Fold: Extend your legs and fold forward to stretch your hamstrings",
+    "duration_seconds": 60
+  },
+  {
+    "text": "Butterfly Stretch: Open your hips by pressing your knees toward the ground",
+    "duration_seconds": 60
+  },
+  {
+    "text": "Seated Spinal Twist (Right Side): Twist gently to release tension in the back",
+    "duration_seconds": 60
+  },
+  {
+    "text": "Seated Spinal Twist (Left Side): Switch sides for a balanced stretch",
+    "duration_seconds": 60
+  },
+  {
+    "text": "Figure Four Stretch (Right Leg): Cross your ankle over your knee to open your hips",
+    "duration_seconds": 60
+  },
+  {
+    "text": "Figure Four Stretch (Left Leg): Switch sides for symmetry",
+    "duration_seconds": 60
+  },
+  {
+    "text": "Reclining Hamstring Stretch (Right Leg): Use a strap or hands to deepen the stretch",
+    "duration_seconds": 60
+  },
+  {
+    "text": "Reclining Hamstring Stretch (Left Leg): Switch sides",
+    "duration_seconds": 60
+  },
+  {
+    "text": "Supine Twist (Right Side): Release tension in the spine",
+    "duration_seconds": 60
+  },
+  {
+    "text": "Supine Twist (Left Side): Switch sides",
+    "duration_seconds": 60
+  },
+  {
+    "text": "Final Relaxation: Lie in Savasana, breathe deeply, and let go of tension",
+    "duration_seconds": 120
+  },
+  {
+    "text": "Thank yourself for taking time to stretch and care for your body",
+    "duration_seconds": 10
+  }
+]
+}
