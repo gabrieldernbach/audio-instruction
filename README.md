@@ -247,6 +247,11 @@ Check the `examples/` directory for more usage examples:
 - `examples/sample_workouts/hiit.txt`: Plain text workout (simplest format)
 - `examples/basic/generate_workout.py`: Python script to create a Tabata workout
 
+## Testing in Docker
+
+This project supports running tests in Docker to ensure a consistent testing environment.
+For details on how to run tests in Docker and how to configure VSCode/Cursor to use Docker for testing, see [TESTING_IN_DOCKER.md](TESTING_IN_DOCKER.md).
+
 ## Deployment to Google Cloud Run
 
 See `examples/deployment/cloud_run_tutorial.md` for detailed deployment instructions.

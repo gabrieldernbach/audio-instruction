@@ -21,10 +21,8 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 try:
     from audio_instruction.core.audio import download_youtube_audio
     from audio_instruction.core.browser_download import (
-        PYTUBE_AVAILABLE,
         REQUESTS_AVAILABLE,
         browser_download_audio,
-        download_with_pytube,
         download_with_requests,
     )
 except ImportError as e:
@@ -73,26 +71,6 @@ def test_download_methods(url):
             logger.error("Direct requests method FAILED")
     else:
         logger.warning("Requests library not available. Skipping direct requests test.")
-    
-    # Method 4: Pytube
-    if PYTUBE_AVAILABLE:
-        logger.info("\n--- Testing pytube method ---")
-        file_path = download_with_pytube(url)
-        if file_path and os.path.exists(file_path):
-            logger.info(f"Pytube method SUCCESS: {file_path}")
-            logger.info(f"File size: {os.path.getsize(file_path)} bytes")
-            
-            # Clean up
-            try:
-                audio = AudioSegment.from_file(file_path, format="mp3")
-                logger.info(f"Audio length: {len(audio)/1000:.2f} seconds")
-                os.remove(file_path)
-            except Exception as e:
-                logger.error(f"Error processing file: {e}")
-        else:
-            logger.error("Pytube method FAILED")
-    else:
-        logger.warning("Pytube library not available. Skipping pytube test.")
 
 
 def main():

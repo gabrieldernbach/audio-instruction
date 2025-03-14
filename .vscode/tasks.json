@@ -1,0 +1,54 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run All Tests in Docker",
+            "type": "shell",
+            "command": "${workspaceFolder}/.vscode/docker_test.sh",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run YouTube Download Test in Docker",
+            "type": "shell",
+            "command": "${workspaceFolder}/run_yt_test_docker.sh",
+            "args": [],
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Specific Test in Docker",
+            "type": "shell",
+            "command": "${workspaceFolder}/.vscode/docker_test.sh",
+            "args": [
+                "-v",
+                "${input:testPath}"
+            ],
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "testPath",
+            "description": "Test file or directory to run",
+            "default": "tests/",
+            "type": "promptString"
+        }
+    ]
+}

@@ -8,10 +8,8 @@ version = "0.1.0"
 description = "A tool for generating workout audio guides with text-to-speech instructions. Available as Docker image: workout-audio-generator"
 readme = "README.md"
 requires-python = ">=3.8"
-license = {text = "MIT"}
-authors = [
-    {name = "Audio Instruction Team", email = "info@example.com"}
-]
+license = { text = "MIT" }
+authors = [{ name = "Audio Instruction Team", email = "info@example.com" }]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -25,12 +23,11 @@ dependencies = [
     "gtts==2.3.2",
     "pyloudnorm==0.1.1",
     "numpy==1.26.0",
-    "yt-dlp>=2023.11.16",
+    "yt-dlp>=2025.2.19",
     "pyyaml==6.0.1",
     "selenium>=4.12.0",
     "webdriver-manager>=4.0.0",
     "requests>=2.31.0",
-    "pytube>=12.0.0",
 ]
 
 [project.urls]
@@ -42,4 +39,4 @@ audio-instruction = "audio_instruction.cli.main:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-python_files = "test_*.py" 
+python_files = "test_*.py"

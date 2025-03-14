@@ -5,26 +5,49 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
+    wget \
+    curl \
+    gnupg \
+    unzip \
+    git \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy test script
-COPY test_yt_download.py /app/
+# Install the latest yt-dlp version directly
+RUN wget -O /usr/local/bin/yt-dlp https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp && \
+    chmod a+rx /usr/local/bin/yt-dlp && \
+    # Verify installation
+    yt-dlp --version
 
-# Make the script executable
+# Create a cache directory for yt-dlp to improve performance
+RUN mkdir -p /root/.cache/yt-dlp && \
+    chmod -R 777 /root/.cache/yt-dlp
+
+# Create tmp directory with proper permissions
+RUN mkdir -p /app/tmp && chmod 777 /app/tmp
+
+# Copy project files
+COPY audio_instruction/ /app/audio_instruction/
+COPY tests/ /app/tests/
+COPY pyproject.toml setup.py README.md test_yt_download.py entrypoint.sh /app/
+
+# Make the test script and entrypoint executable
 RUN chmod +x /app/test_yt_download.py
+RUN chmod +x /app/entrypoint.sh
 
-# Create tmp directory
-RUN mkdir -p /app/tmp
-
-# Install yt-dlp - try the latest version
-RUN pip install --no-cache-dir --upgrade yt-dlp
+# Install project dependencies
+RUN pip install --no-cache-dir -e .
+RUN pip install --no-cache-dir pytest pytest-xdist
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app
+# Configure yt-dlp to use IPv4 by default and increase timeouts
+ENV YDL_SOCKET_TIMEOUT=60
+ENV YDL_FORCE_IPV4=1
 
 # Set the entrypoint to the test script
-ENTRYPOINT ["/app/test_yt_download.py"]
+ENTRYPOINT ["/app/entrypoint.sh"]
 
-# Default command (use the default URL)
-CMD [] 
+# Default command (run pytest)
+CMD ["--pytest"] 
