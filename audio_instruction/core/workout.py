@@ -59,14 +59,19 @@ def integrate_continuous_background(guide_audio: AudioSegment, background_urls: 
     Returns:
         AudioSegment with guide audio and background music
     """
-    # First try regular downloading with user agent spoofing and rate limiting
-    logging.info("Attempting to download background tracks using standard method")
-    bg_tracks = fetch_background_tracks(background_urls)
-    
-    # If standard method fails and browser automation is available, try that as fallback
-    if not bg_tracks and BROWSER_AUTOMATION_AVAILABLE:
-        logging.info("Standard download failed, falling back to browser automation")
+    # Try browser automation first as it's more reliable against YouTube's anti-scraping measures
+    if BROWSER_AUTOMATION_AVAILABLE:
+        logging.info("Attempting to download background tracks using browser automation method")
         bg_tracks = fetch_background_tracks_browser(background_urls)
+        
+        # If browser automation fails, fall back to standard method
+        if not bg_tracks:
+            logging.info("Browser automation failed, falling back to standard download method")
+            bg_tracks = fetch_background_tracks(background_urls)
+    else:
+        # If browser automation is not available, use standard method
+        logging.info("Browser automation not available, using standard download method")
+        bg_tracks = fetch_background_tracks(background_urls)
     
     # If we still have no tracks, return just the guide audio
     if not bg_tracks:
@@ -105,11 +110,21 @@ def generate_workout_guide_audio(
     """
     guide_audio = assemble_workout_audio(instructions, lang)
     
+    # Try to add background music, but provide graceful fallback if it fails
     if background_urls:
         try:
-            guide_audio = integrate_continuous_background(guide_audio, background_urls)
+            logging.info(f"Attempting to add background music from {len(background_urls)} URL(s)")
+            guide_audio_with_background = integrate_continuous_background(guide_audio, background_urls)
+            
+            # Only use the version with background music if it was successfully added
+            if guide_audio_with_background != guide_audio:
+                logging.info("Successfully added background music")
+                guide_audio = guide_audio_with_background
+            else:
+                logging.warning("Background music could not be added. Using instruction audio only.")
         except Exception as e:
             logging.error(f"Failed to integrate background music: {e}. Using instruction audio only.")
+            # Continue with just the guide audio without background music
     
     # Export to buffer
     output_buffer = io.BytesIO()
@@ -119,5 +134,6 @@ def generate_workout_guide_audio(
     # Export to file if path provided
     if output_path:
         guide_audio.export(output_path, format="mp3", bitrate="192k")
+        logging.info(f"Workout guide saved to {output_path}")
     
     return output_buffer 

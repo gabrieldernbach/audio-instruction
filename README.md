@@ -6,11 +6,19 @@ A Python package for generating workout audio guides with text-to-speech instruc
 
 - Generate workout audio guides with text-to-speech instructions
 - Add countdown audio between exercises
-- Include background music from YouTube URLs
+- Include background music from YouTube URLs (with fallback to instruction-only audio if download fails)
 - Normalize audio loudness for consistent volume
 - Support for multiple configuration formats (JSON, YAML, plain text)
 - CLI for simple usage
 - FastAPI web service for integration in other applications (e.g. as a tool for a custom GPT)
+
+## Important Note on YouTube Background Music
+
+Due to YouTube's anti-scraping measures, downloading background music from YouTube URLs may fail. The package will gracefully fall back to instruction-only audio when this happens. For reliable background music, consider:
+
+1. Using locally stored audio files instead of YouTube URLs
+2. Using royalty-free music from sources that explicitly allow downloads
+3. Running with the `--no-background` flag if you don't need background music
 
 ## Installation
 

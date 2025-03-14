@@ -223,56 +223,67 @@ def parse_plain_text(text_content: str) -> Dict[str, Any]:
 
 
 def main():
-    """Main entry point for the CLI."""
-    parser = argparse.ArgumentParser(
-        description="Generate workout audio guides with text-to-speech instructions."
-    )
-    
-    parser.add_argument(
-        "config_file",
-        help="Path to configuration file (JSON, YAML, or TXT)"
-    )
-    
-    parser.add_argument(
-        "-o", "--output",
-        help="Output MP3 file path (default: same as config file with .mp3 extension)"
-    )
+    """Main entry point for the command line interface."""
+    # Parse arguments
+    parser = argparse.ArgumentParser(description="Generate workout audio guides with text-to-speech instructions.")
+    parser.add_argument("config_file", type=str, help="Path to configuration file (JSON, YAML, or TXT)")
+    parser.add_argument("-o", "--output", type=str, help="Output MP3 file path (default: same as config file with .mp3 extension)")
+    parser.add_argument("--no-background", action="store_true", help="Skip background music, generating instruction-only audio")
     
     args = parser.parse_args()
     
-    # Parse configuration from file
-    config = parse_workout_config(args.config_file)
-    
-    # Set default output path if not specified
-    if not args.output:
-        input_path = Path(args.config_file)
-        output_path = str(input_path.with_suffix('.mp3'))
-    else:
-        output_path = args.output
-    
     try:
+        # Parse the configuration file
+        config = parse_workout_config(args.config_file)
+        
+        # Determine output path
+        if args.output:
+            output_path = args.output
+        else:
+            # Default to same filename but with .mp3 extension
+            base_name = os.path.splitext(args.config_file)[0]
+            output_path = f"{base_name}.mp3"
+        
+        # Extract configuration
+        instructions = config["instructions"]
+        language = config.get("language", "en")
+        background_urls = config.get("background_urls")
+        
+        # Skip background music if --no-background is specified
+        if args.no_background:
+            print("Skipping background music due to --no-background flag")
+            background_urls = None
+        
+        # Check if we have instructions
+        if not instructions:
+            print("Error: No workout instructions found in configuration file.")
+            sys.exit(1)
+        
         # Validate instructions
-        validate_workout_instructions(config['instructions'])
+        try:
+            validate_workout_instructions(instructions)
+        except ValidationError as e:
+            print(f"Error: {e}")
+            sys.exit(1)
         
-        # Generate audio
-        print(f"Generating workout guide with {len(config['instructions'])} instructions...")
-        print(f"Language: {config['language']}")
-        if config['background_urls']:
-            print(f"Using {len(config['background_urls'])} background tracks")
+        # Generate the audio
+        print(f"Generating workout guide with {len(instructions)} instructions...")
+        print(f"Language: {language}")
+        if background_urls:
+            print(f"Using {len(background_urls) if isinstance(background_urls, list) else 1} background tracks")
+        else:
+            print("No background music specified")
         
+        # Generate the audio
         generate_workout_guide_audio(
-            instructions=config['instructions'],
-            lang=config['language'],
-            background_urls=config['background_urls'],
+            instructions=instructions,
+            lang=language,
+            background_urls=background_urls,
             output_path=output_path
         )
         
-        print(f"Workout guide saved to {os.path.abspath(output_path)}")
-    except ValidationError as e:
-        print(f"Error: {e}", file=sys.stderr)
-        sys.exit(1)
     except Exception as e:
-        print(f"Error generating audio: {e}", file=sys.stderr)
+        print(f"Error: {e}")
         sys.exit(1)
 
 

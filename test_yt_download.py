@@ -1,114 +1,108 @@
 #!/usr/bin/env python3
-"""Test script for YouTube download functionality using yt-dlp."""
+"""
+Test script for YouTube download functionality.
+This script tests different methods of downloading audio from YouTube URLs.
+"""
 
-import glob
+import argparse
+import logging
 import os
-import subprocess
 import sys
-import time
-from pathlib import Path
+
+from pydub import AudioSegment
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+# Make sure we can import the package
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+
+try:
+    from audio_instruction.core.audio import download_youtube_audio
+    from audio_instruction.core.browser_download import (
+        PYTUBE_AVAILABLE,
+        REQUESTS_AVAILABLE,
+        browser_download_audio,
+        download_with_pytube,
+        download_with_requests,
+    )
+except ImportError as e:
+    logger.error(f"Failed to import modules: {e}")
+    sys.exit(1)
 
 
-def test_download(url, output_path):
-    """Test downloading a YouTube video and converting to MP3.
+def test_download_methods(url):
+    """Test different download methods with the given URL."""
+    logger.info(f"Testing YouTube download methods with URL: {url}")
     
-    Args:
-        url: YouTube URL to download
-        output_path: Path to save the output file
+    # Method 1: Standard yt-dlp
+    logger.info("\n--- Testing standard yt-dlp method ---")
+    audio1 = download_youtube_audio(url)
+    if audio1:
+        logger.info("Standard yt-dlp method SUCCESS")
+        logger.info(f"Audio length: {len(audio1)/1000:.2f} seconds")
+    else:
+        logger.error("Standard yt-dlp method FAILED")
     
-    Returns:
-        bool: True if successful, False otherwise
-    """
-    print(f"Testing download from {url}")
-    print(f"Output will be saved to {output_path}")
+    # Method 2: Browser download (which uses requests)
+    logger.info("\n--- Testing browser download method ---")
+    audio2 = browser_download_audio(url)
+    if audio2:
+        logger.info("Browser download method SUCCESS")
+        logger.info(f"Audio length: {len(audio2)/1000:.2f} seconds")
+    else:
+        logger.error("Browser download method FAILED")
     
-    # Ensure directory exists
-    output_dir = os.path.dirname(output_path)
-    os.makedirs(output_dir, exist_ok=True)
-    
-    try:
-        # Run yt-dlp with verbose output to see what's happening
-        cmd = [
-            "yt-dlp", 
-            "-v",  # Verbose output
-            "-x",  # Extract audio
-            "--audio-format", "mp3", 
-            "--audio-quality", "192K", 
-            "-o", output_path, 
-            url
-        ]
-        
-        print(f"Running command: {' '.join(cmd)}")
-        
-        result = subprocess.run(
-            cmd,
-            check=True, 
-            stdout=subprocess.PIPE, 
-            stderr=subprocess.PIPE,
-            text=True
-        )
-        
-        # Print output for debugging
-        print("=== STDOUT ===")
-        print(result.stdout)
-        print("=== STDERR ===")
-        print(result.stderr)
-        
-        # Handle template in output path
-        if "%(ext)s" in output_path:
-            # Replace with actual extension
-            actual_path = output_path.replace("%(ext)s", "mp3")
-            print(f"Looking for file at {actual_path}")
-        else:
-            actual_path = output_path
-        
-        # Check if file exists and has size > 0
-        if os.path.exists(actual_path) and os.path.getsize(actual_path) > 0:
-            print(f"Success! File downloaded to {actual_path} (size: {os.path.getsize(actual_path)} bytes)")
-            return True
-        else:
-            print(f"File not found at {actual_path}, checking directory...")
-            # Try to find any MP3 files in the directory
-            mp3_files = glob.glob(os.path.join(output_dir, "*.mp3"))
-            if mp3_files:
-                print(f"Found MP3 files: {mp3_files}")
-                return True
-            else:
-                print(f"Error: No MP3 files found in {output_dir}")
-                return False
+    # Method 3: Direct requests
+    if REQUESTS_AVAILABLE:
+        logger.info("\n--- Testing direct requests method ---")
+        file_path = download_with_requests(url)
+        if file_path and os.path.exists(file_path):
+            logger.info(f"Direct requests method SUCCESS: {file_path}")
+            logger.info(f"File size: {os.path.getsize(file_path)} bytes")
             
-    except subprocess.CalledProcessError as e:
-        print(f"Command failed with exit code {e.returncode}")
-        print("=== STDOUT ===")
-        print(e.stdout)
-        print("=== STDERR ===")
-        print(e.stderr)
-        return False
-    except Exception as e:
-        print(f"Unexpected error: {e}")
-        return False
+            # Clean up
+            try:
+                audio = AudioSegment.from_file(file_path, format="mp3")
+                logger.info(f"Audio length: {len(audio)/1000:.2f} seconds")
+                os.remove(file_path)
+            except Exception as e:
+                logger.error(f"Error processing file: {e}")
+        else:
+            logger.error("Direct requests method FAILED")
+    else:
+        logger.warning("Requests library not available. Skipping direct requests test.")
+    
+    # Method 4: Pytube
+    if PYTUBE_AVAILABLE:
+        logger.info("\n--- Testing pytube method ---")
+        file_path = download_with_pytube(url)
+        if file_path and os.path.exists(file_path):
+            logger.info(f"Pytube method SUCCESS: {file_path}")
+            logger.info(f"File size: {os.path.getsize(file_path)} bytes")
+            
+            # Clean up
+            try:
+                audio = AudioSegment.from_file(file_path, format="mp3")
+                logger.info(f"Audio length: {len(audio)/1000:.2f} seconds")
+                os.remove(file_path)
+            except Exception as e:
+                logger.error(f"Error processing file: {e}")
+        else:
+            logger.error("Pytube method FAILED")
+    else:
+        logger.warning("Pytube library not available. Skipping pytube test.")
 
 
 def main():
-    """Main entry point for the script."""
-    # Default values
-    url = "https://www.youtube.com/watch?v=jNQXAC9IVRw"  # "Me at the zoo" - first YouTube video (short)
-    output_path = "tmp/downloaded_audio.%(ext)s"
+    """Main function to run the tests."""
+    parser = argparse.ArgumentParser(description="Test YouTube download functionality")
+    parser.add_argument("url", type=str, 
+                      help="YouTube URL to test (e.g., https://www.youtube.com/watch?v=YOUTUBE_ID)")
+    args = parser.parse_args()
     
-    # Allow overriding from command line
-    if len(sys.argv) > 1:
-        url = sys.argv[1]
-    if len(sys.argv) > 2:
-        output_path = sys.argv[2]
-    
-    # Run the test
-    success = test_download(url, output_path)
-    
-    # Wait a moment to ensure all output is printed
-    time.sleep(1)
-    
-    # Exit with appropriate status code
-    sys.exit(0 if success else 1)
+    test_download_methods(args.url)
 
 
 if __name__ == "__main__":

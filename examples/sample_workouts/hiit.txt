@@ -1,6 +1,8 @@
 # HIIT Workout
 # language: en
-# background: https://www.youtube.com/watch?v=xAP8CSMEwZ8
+# background: https://www.youtube.com/watch?v=RsBtQCDbTWo
+# background: https://www.youtube.com/watch?v=7NOSDKb0HlU
+# background: https://www.youtube.com/watch?v=xdcTUa4RxVE
 
 Get ready for a high-intensity interval training workout | 10
 Warm-up - light jogging in place | 60
