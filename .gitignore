@@ -5,6 +5,11 @@ __pycache__/
 
 # C extensions
 *.so
+*.mp3
+*.mp4
+*.wav
+*.ogg
+*.flac
 
 # Distribution / packaging
 .Python
@@ -116,3 +121,30 @@ cython_debug/
 .pypirc
 
 *.mp3
+
+# OS specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor specific
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Large media files
+*.mp3
+*.mp4
+*.wav
+*.ogg
+*.flac
+
+# Temporary files
+*.tmp
+tmp/
+temp/
+.~*
+
+# Docker specific
+.docker-cache/

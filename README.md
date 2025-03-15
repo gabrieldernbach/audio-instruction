@@ -247,6 +247,62 @@ Check the `examples/` directory for more usage examples:
 - `examples/sample_workouts/hiit.txt`: Plain text workout (simplest format)
 - `examples/basic/generate_workout.py`: Python script to create a Tabata workout
 
+## Repository Organization
+
+The repository has been reorganized for better maintainability:
+
+- `audio_instruction/` - Core package code
+- `docs/` - Documentation files
+- `docker/` - Docker configuration 
+- `examples/` - Example usage patterns
+- `scripts/` - Utility scripts
+- `tests/` - Test suite
+
+## Docker Usage
+
+The project uses specialized Docker containers for different purposes:
+
+### API Container
+
+For running the web service:
+
+```bash
+# Build and start the API server
+docker compose -f docker/docker-compose.yml up api
+
+# Or use the API container directly
+docker build -t audio-api -f docker/Dockerfile.api .
+docker run -p 8000:8000 audio-api
+```
+
+### CLI Container
+
+For processing workout files:
+
+```bash
+# Build the CLI container
+docker build -t audio-cli -f docker/Dockerfile.cli .
+
+# Process a workout file
+docker run -v $(pwd):/data audio-cli /data/my_workout.json
+
+# Run with other CLI options
+docker run audio-cli --help
+```
+
+### Test Container
+
+For running tests:
+
+```bash
+# Run all tests
+docker compose -f docker/docker-compose.yml up test
+
+# Or use the test container directly with custom options
+docker build -t audio-test -f docker/Dockerfile.test .
+docker run audio-test python -m pytest tests/test_audio_normalization.py -v
+```
+
 ## Testing in Docker
 
 This project supports running tests in Docker to ensure a consistent testing environment.

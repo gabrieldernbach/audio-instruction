@@ -4,11 +4,9 @@
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
-    
     // Docker test configuration
     "python.testing.cwd": "${workspaceFolder}",
     "python.testing.pytestPath": "${workspaceFolder}/.vscode/docker_test.sh",
-    
     // Editor settings for Python
     "editor.formatOnSave": true,
     "python.formatting.provider": "black",

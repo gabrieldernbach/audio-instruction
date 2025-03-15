@@ -12,16 +12,8 @@ from audio_instruction.core.audio import (
 )
 from audio_instruction.core.tts import build_instruction_audio
 
-# Try to import browser automation
-try:
-    from audio_instruction.core.browser_download import (
-        SELENIUM_AVAILABLE,
-        fetch_background_tracks_browser,
-    )
-    BROWSER_AUTOMATION_AVAILABLE = SELENIUM_AVAILABLE
-except ImportError:
-    BROWSER_AUTOMATION_AVAILABLE = False
-    logging.warning("Browser automation module not available. Falling back to standard download.")
+# Browser automation is not available
+BROWSER_AUTOMATION_AVAILABLE = False
 
 
 def assemble_workout_audio(instructions: List[Tuple[str, int]], lang: str = "en") -> AudioSegment:
@@ -59,21 +51,11 @@ def integrate_continuous_background(guide_audio: AudioSegment, background_urls: 
     Returns:
         AudioSegment with guide audio and background music
     """
-    # Try browser automation first as it's more reliable against YouTube's anti-scraping measures
-    if BROWSER_AUTOMATION_AVAILABLE:
-        logging.info("Attempting to download background tracks using browser automation method")
-        bg_tracks = fetch_background_tracks_browser(background_urls)
-        
-        # If browser automation fails, fall back to standard method
-        if not bg_tracks:
-            logging.info("Browser automation failed, falling back to standard download method")
-            bg_tracks = fetch_background_tracks(background_urls)
-    else:
-        # If browser automation is not available, use standard method
-        logging.info("Browser automation not available, using standard download method")
-        bg_tracks = fetch_background_tracks(background_urls)
+    # Use standard method for downloading background tracks
+    logging.info("Using standard download method for background tracks")
+    bg_tracks = fetch_background_tracks(background_urls)
     
-    # If we still have no tracks, return just the guide audio
+    # If we have no tracks, return just the guide audio
     if not bg_tracks:
         logging.warning("No background tracks could be downloaded. Using instruction audio only.")
         return guide_audio

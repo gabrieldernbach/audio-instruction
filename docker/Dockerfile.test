@@ -9,7 +9,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     gnupg \
     unzip \
-    git \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -19,35 +18,26 @@ RUN wget -O /usr/local/bin/yt-dlp https://github.com/yt-dlp/yt-dlp/releases/late
     # Verify installation
     yt-dlp --version
 
-# Create a cache directory for yt-dlp to improve performance
+# Create optimization directories
 RUN mkdir -p /root/.cache/yt-dlp && \
-    chmod -R 777 /root/.cache/yt-dlp
+    chmod -R 777 /root/.cache/yt-dlp && \
+    mkdir -p /app/tmp && chmod 777 /app/tmp
 
-# Create tmp directory with proper permissions
-RUN mkdir -p /app/tmp && chmod 777 /app/tmp
-
-# Copy project files
+# Copy application and test files
 COPY audio_instruction/ /app/audio_instruction/
 COPY tests/ /app/tests/
-COPY pyproject.toml setup.py README.md test_yt_download.py entrypoint.sh /app/
+COPY pyproject.toml setup.py README.md /app/
 
-# Make the test script and entrypoint executable
-RUN chmod +x /app/test_yt_download.py
-RUN chmod +x /app/entrypoint.sh
-
-# Install project dependencies
+# Install the package and test dependencies
 RUN pip install --no-cache-dir -e .
 RUN pip install --no-cache-dir pytest pytest-xdist
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONPATH=/app
-# Configure yt-dlp to use IPv4 by default and increase timeouts
 ENV YDL_SOCKET_TIMEOUT=60
 ENV YDL_FORCE_IPV4=1
 
-# Set the entrypoint to the test script
-ENTRYPOINT ["/app/entrypoint.sh"]
-
-# Default command (run pytest)
-CMD ["--pytest"] 
+# Set default command to run tests
+CMD ["python", "-m", "pytest", "tests/"] 

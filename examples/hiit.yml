@@ -1,5 +1,5 @@
 language: en
-background_urls: https://www.youtube.com/watch?v=xAP8CSMEwZ8
+background_urls: https://www.youtube.com/watch?v=lTRiuFIWV54
 instructions:
   - Get ready for a high-intensity interval training workout
   - text: Warm-up - light jogging in place
@@ -47,4 +47,4 @@ instructions:
     duration_seconds: 30
   - text: Cool down - stretch your arms
     duration_seconds: 30
-  - Workout complete. Well done! 
+  - Workout complete. Well done!

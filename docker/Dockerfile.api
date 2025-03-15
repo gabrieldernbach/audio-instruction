@@ -1,0 +1,43 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg \
+    wget \
+    curl \
+    gnupg \
+    unzip \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install the latest yt-dlp version directly
+RUN wget -O /usr/local/bin/yt-dlp https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp && \
+    chmod a+rx /usr/local/bin/yt-dlp && \
+    # Verify installation
+    yt-dlp --version
+
+# Create optimization directories
+RUN mkdir -p /root/.cache/yt-dlp && \
+    chmod -R 777 /root/.cache/yt-dlp && \
+    mkdir -p /app/tmp && chmod 777 /app/tmp
+
+# Copy only necessary files for API functionality
+COPY audio_instruction/ /app/audio_instruction/
+COPY pyproject.toml setup.py README.md /app/
+
+# Install the package and dependencies
+RUN pip install --no-cache-dir -e .
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV YDL_SOCKET_TIMEOUT=60
+ENV YDL_FORCE_IPV4=1
+
+# Expose port for API
+EXPOSE 8000
+
+# API-specific command
+CMD ["uvicorn", "audio_instruction.api.app:app", "--host", "0.0.0.0", "--port", "8000"] 
